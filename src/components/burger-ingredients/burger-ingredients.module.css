@@ -1,15 +1,16 @@
-.burger_ingredients {
+.burgerIngredients {
   display: flex;
   flex-direction: column;
   max-width: 600px;
   color: var(--text-primary-color);
-  font-family: 'Jet Brains Mono', serif;
 }
 
-.menu {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  list-style-type: none;
+.sections {
+  overflow-y: auto;
+}
+
+.sectionIngredients {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: calc(var(--offset-base-size) * 8) calc(var(--offset-base-size) * 6);
 }

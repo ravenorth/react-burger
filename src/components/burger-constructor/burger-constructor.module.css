@@ -1,7 +1,46 @@
-.burger_constructor {
+.burgerConstructor {
   display: flex;
   flex-direction: column;
   width: 600px;
-  padding-bottom: 20px;
   color: var(--text-primary-color);
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.price {
+  display: inline-flex;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  margin-inline-start: 9px;
+}
+
+.list,
+.otherIngredients {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--offset-base-size) * 4);
+}
+
+.list {
+  align-items: flex-end;
+  min-height: 0;
+}
+
+.otherIngredients {
+  overflow-y: auto;
+}
+
+.optionalIngredient {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--offset-base-size) * 2);
 }

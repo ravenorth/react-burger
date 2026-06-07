@@ -1,0 +1,28 @@
+.burgerIngredient {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 272px;
+  height: 208px;
+  text-align: center;
+}
+
+.image {
+  background-position: center;
+  background-size: contain;
+}
+
+.price {
+  display: inline-flex;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-inline-start: 9px;
+}
+
+.counter {
+  position: absolute;
+}
