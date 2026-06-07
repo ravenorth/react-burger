@@ -112,8 +112,9 @@ export default defineConfig(
             'side-effect-style',
             'style',
           ],
-                    internalPattern: [
+          internalPattern: [
             '^/',
+            '^@assets/',
             '^@components/',
             '^@contexts/',
             '^@hooks/',

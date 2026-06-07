@@ -4,7 +4,10 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import { Modal } from '@components/modal/modal.tsx';
+import { OrderDetails } from '@components/order-details/order-details.tsx';
 
 import type { TIngredient } from '@utils/types';
 
@@ -21,24 +24,31 @@ export const BurgerConstructor = ({
     return ingredients.reduce((acc, ingredient) => acc + ingredient.price, 0);
   }, [ingredients]);
 
+  const [orderDetailsOpened, setOrderDetailsOpened] = useState(false);
+
   return (
-    <section className={`${styles.burgerConstructor} mb-10`}>
-      <IngredientList ingredients={ingredients} />
-      <footer className={`${styles.info} pl-4 pr-4 pt-10`}>
-        <span className={`${styles.price} text text_type_digits-medium mr-10`}>
-          {total} <CurrencyIcon className={styles.icon} type="primary" />
-        </span>
-        <Button
-          htmlType="button"
-          size="large"
-          onClick={() => {
-            /*TODO: sprint1*/
-          }}
-        >
-          Оформить заказ
-        </Button>
-      </footer>
-    </section>
+    <>
+      <section className={`${styles.burgerConstructor} mb-10`}>
+        <IngredientList ingredients={ingredients} />
+        <footer className={`${styles.info} pl-4 pr-4 pt-10`}>
+          <span className={`${styles.price} text text_type_digits-medium mr-10`}>
+            {total} <CurrencyIcon className={styles.icon} type="primary" />
+          </span>
+          <Button
+            htmlType="button"
+            size="large"
+            onClick={() => setOrderDetailsOpened(true)}
+          >
+            Оформить заказ
+          </Button>
+        </footer>
+      </section>
+      {orderDetailsOpened && (
+        <Modal onClose={() => setOrderDetailsOpened(false)}>
+          <OrderDetails id="034536" />
+        </Modal>
+      )}
+    </>
   );
 };
 
