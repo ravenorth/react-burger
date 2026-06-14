@@ -11,7 +11,7 @@ export function IngredientDetails({
 }: TIngredientDetailsProps): React.JSX.Element {
   return (
     <div className={`${styles.content} pb-15`}>
-      <img className={styles.image} src={ingredient.image} alt={ingredient.name} />
+      <img className={styles.image} src={ingredient.image_large} alt={ingredient.name} />
       <span className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</span>
       <div className={styles.facts}>
         <Fact name="Калории,ккал" value={ingredient.calories} />

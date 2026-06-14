@@ -69,7 +69,7 @@ const IngredientList = ({ ingredients }: TIngredientListProps): React.JSX.Elemen
       {bun && (
         <ConstructorElement
           extraClass="ml-4 mr-4"
-          text={bun.name}
+          text={`${bun.name} (верх)`}
           thumbnail={bun.image}
           price={bun.price}
           isLocked={true}
@@ -84,7 +84,7 @@ const IngredientList = ({ ingredients }: TIngredientListProps): React.JSX.Elemen
       {bun && (
         <ConstructorElement
           extraClass="ml-4 mr-4"
-          text={bun.name}
+          text={`${bun.name} (низ)`}
           thumbnail={bun.image}
           price={bun.price}
           isLocked={true}
