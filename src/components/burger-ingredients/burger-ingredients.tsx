@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { type RefObject, useMemo, useRef, useState } from 'react';
 
 import { Ingredient } from '@components/burger-ingredient/burger-ingredient.tsx';
 import { BurgerIngredientsTabs } from '@components/burger-ingredients-tabs/burger-ingredients-tabs.tsx';
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
+import { useBurgerIngredientsTabsController } from '@hooks/useBurgerIngredientsTabsController.ts';
 
 import type { TIngredient } from '@utils/types';
 
@@ -16,7 +17,11 @@ type TBurgerIngredientsProps = {
 export const BurgerIngredients = ({
   ingredients,
 }: TBurgerIngredientsProps): React.JSX.Element => {
-  const [selectedTab, setSelectedTab] = useState('bun');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
+
   const [openedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
 
   const buns = useMemo(() => {
@@ -29,22 +34,37 @@ export const BurgerIngredients = ({
     return ingredients.filter((ingredient) => ingredient.type === 'sauce');
   }, [ingredients]);
 
+  const { selectedTab, handleSelectTab, handleContainerScroll } =
+    useBurgerIngredientsTabsController({
+      containerRef,
+      bunRef,
+      mainRef,
+      sauceRef,
+    });
+
   return (
     <>
       <section className={`${styles.burgerIngredients} mb-10`}>
-        <BurgerIngredientsTabs selectedTab={selectedTab} onTabClick={setSelectedTab} />
-        <div className={`${styles.sections} custom-scroll`}>
+        <BurgerIngredientsTabs selectedTab={selectedTab} onTabClick={handleSelectTab} />
+        <div
+          className={`${styles.sections} custom-scroll`}
+          ref={containerRef}
+          onScroll={handleContainerScroll}
+        >
           <Section
+            ref={bunRef}
             title="Булки"
             ingredients={buns}
             onIngredientClick={setSelectedIngredient}
           />
           <Section
+            ref={mainRef}
             title="Начинки"
             ingredients={mains}
             onIngredientClick={setSelectedIngredient}
           />
           <Section
+            ref={sauceRef}
             title="Соусы"
             ingredients={sauces}
             onIngredientClick={setSelectedIngredient}
@@ -61,18 +81,20 @@ export const BurgerIngredients = ({
 };
 
 type TSectionProps = {
+  ref?: RefObject<HTMLHeadingElement | null>;
   title: string;
   ingredients: TIngredient[];
   onIngredientClick: (ingredient: TIngredient) => void;
 };
 
 const Section = ({
+  ref,
   title,
   ingredients,
   onIngredientClick,
 }: TSectionProps): React.JSX.Element => {
   return (
-    <section className="mt-10">
+    <section ref={ref} className="mt-10">
       <h2 className="text text_type_main-medium mb-6">{title}</h2>
       <div className={`${styles.sectionIngredients} pl-4 pr-4`}>
         {ingredients.map((ingredient) => (
