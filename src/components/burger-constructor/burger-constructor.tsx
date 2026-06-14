@@ -4,32 +4,30 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
+import {
+  getBun,
+  getIngredients,
+  getTotalPrice,
+} from '@services/burgerConstructor/slice.ts';
 
-import type { TIngredient } from '@utils/types';
+import type { TConstructorIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
-type TBurgerConstructorProps = {
-  ingredients: TIngredient[];
-};
-
-export const BurgerConstructor = ({
-  ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
-  const total = useMemo(() => {
-    return ingredients.reduce((acc, ingredient) => acc + ingredient.price, 0);
-  }, [ingredients]);
+export const BurgerConstructor = (): React.JSX.Element => {
+  const total = useSelector(getTotalPrice);
 
   const [orderDetailsOpened, setOrderDetailsOpened] = useState(false);
 
   return (
     <>
       <section className={`${styles.burgerConstructor} mb-10`}>
-        <IngredientList ingredients={ingredients} />
+        <IngredientList />
         <footer className={`${styles.info} pl-4 pr-4 pt-10`}>
           <span className={`${styles.price} text text_type_digits-medium mr-10`}>
             {total} <CurrencyIcon className={styles.icon} type="primary" />
@@ -52,17 +50,9 @@ export const BurgerConstructor = ({
   );
 };
 
-type TIngredientListProps = {
-  ingredients: TIngredient[];
-};
-
-const IngredientList = ({ ingredients }: TIngredientListProps): React.JSX.Element => {
-  const bun = useMemo(() => {
-    return ingredients.find((ingredient) => ingredient.type === 'bun');
-  }, [ingredients]);
-  const otherIngredients = useMemo(() => {
-    return ingredients.filter((ingredient) => ingredient.type !== 'bun');
-  }, [ingredients]);
+const IngredientList = (): React.JSX.Element => {
+  const bun = useSelector(getBun);
+  const ingredients = useSelector(getIngredients);
 
   return (
     <div className={styles.list}>
@@ -77,8 +67,8 @@ const IngredientList = ({ ingredients }: TIngredientListProps): React.JSX.Elemen
         />
       )}
       <div className={`${styles.otherIngredients} custom-scroll pl-4 pr-4`}>
-        {otherIngredients.map((ingredient) => (
-          <OptionalIngredient key={ingredient._id} ingredient={ingredient} />
+        {ingredients.map((ingredient) => (
+          <OptionalIngredient key={ingredient.key} ingredient={ingredient} />
         ))}
       </div>
       {bun && (
@@ -96,7 +86,7 @@ const IngredientList = ({ ingredients }: TIngredientListProps): React.JSX.Elemen
 };
 
 type TOptionalIngredientProps = {
-  ingredient: TIngredient;
+  ingredient: TConstructorIngredient;
 };
 
 const OptionalIngredient = ({
@@ -106,7 +96,7 @@ const OptionalIngredient = ({
     <div className={styles.optionalIngredient}>
       <DragIcon type="primary" />
       <ConstructorElement
-        key={ingredient._id}
+        key={ingredient.key}
         text={ingredient.name}
         thumbnail={ingredient.image}
         price={ingredient.price}

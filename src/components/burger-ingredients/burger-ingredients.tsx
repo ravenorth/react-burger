@@ -110,6 +110,7 @@ const Section = ({
   );
 };
 
+// TODO sprint2
 const getMockCount = (ingredient: TIngredient): number | undefined => {
   return ingredient.price < 1000 ? 1 : undefined;
 };
