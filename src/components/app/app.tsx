@@ -3,7 +3,7 @@ import { Preloader } from '@krgaa/react-developer-burger-ui-components';
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { useGetIngredientsQuery } from '@services/ingredientsApi.ts';
+import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi.ts';
 
 import styles from './app.module.css';
 

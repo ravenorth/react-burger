@@ -4,7 +4,7 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
@@ -13,7 +13,8 @@ import {
   getBun,
   getIngredients,
   getTotalPrice,
-} from '@services/burgerConstructor/slice.ts';
+} from '@services/burgerConstructor/burgerConstructorSlice.ts';
+import { useCreateOrderMutation } from '@services/order/orderApi.ts';
 
 import type { TConstructorIngredient } from '@utils/types';
 
@@ -21,8 +22,28 @@ import styles from './burger-constructor.module.css';
 
 export const BurgerConstructor = (): React.JSX.Element => {
   const total = useSelector(getTotalPrice);
+  const bun = useSelector(getBun);
+  const ingredients = useSelector(getIngredients);
+
+  const [createOrder, { data, isLoading }] = useCreateOrderMutation();
 
   const [orderDetailsOpened, setOrderDetailsOpened] = useState(false);
+
+  const handleOrderClick = useCallback(() => {
+    if (!bun) return;
+
+    const ingredientIds = [bun._id, ...ingredients.map((item) => item._id), bun._id];
+
+    createOrder({ ingredients: ingredientIds })
+      .then(() => {
+        setOrderDetailsOpened(true);
+      })
+      .catch(console.error);
+  }, [bun, ingredients, createOrder]);
+
+  const handleCloseModal = useCallback(() => {
+    setOrderDetailsOpened(false);
+  }, []);
 
   return (
     <>
@@ -35,15 +56,16 @@ export const BurgerConstructor = (): React.JSX.Element => {
           <Button
             htmlType="button"
             size="large"
-            onClick={() => setOrderDetailsOpened(true)}
+            onClick={handleOrderClick}
+            disabled={isLoading || !bun}
           >
-            Оформить заказ
+            {isLoading ? 'Оформляем...' : 'Оформить заказ'}
           </Button>
         </footer>
       </section>
-      {orderDetailsOpened && (
-        <Modal onClose={() => setOrderDetailsOpened(false)}>
-          <OrderDetails id="034536" />
+      {orderDetailsOpened && data?.order && (
+        <Modal onClose={handleCloseModal}>
+          <OrderDetails id={data.order.number} />
         </Modal>
       )}
     </>

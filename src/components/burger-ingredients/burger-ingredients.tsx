@@ -1,10 +1,15 @@
-import { type RefObject, useMemo, useRef, useState } from 'react';
+import { type RefObject, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Ingredient } from '@components/burger-ingredient/burger-ingredient.tsx';
 import { BurgerIngredientsTabs } from '@components/burger-ingredients-tabs/burger-ingredients-tabs.tsx';
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 import { useBurgerIngredientsTabsController } from '@hooks/useBurgerIngredientsTabsController.ts';
+import {
+  getIngredient,
+  setIngredient,
+} from '@services/ingredientDetails/ingredientDetailsSlice.ts';
 
 import type { TIngredient } from '@utils/types';
 
@@ -22,7 +27,8 @@ export const BurgerIngredients = ({
   const mainRef = useRef<HTMLHeadingElement>(null);
   const sauceRef = useRef<HTMLHeadingElement>(null);
 
-  const [openedIngredient, setSelectedIngredient] = useState<TIngredient | null>(null);
+  const dispatch = useDispatch();
+  const openedIngredient = useSelector(getIngredient);
 
   const buns = useMemo(() => {
     return ingredients.filter((ingredient) => ingredient.type === 'bun');
@@ -55,24 +61,24 @@ export const BurgerIngredients = ({
             ref={bunRef}
             title="Булки"
             ingredients={buns}
-            onIngredientClick={setSelectedIngredient}
+            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
           <Section
             ref={mainRef}
             title="Начинки"
             ingredients={mains}
-            onIngredientClick={setSelectedIngredient}
+            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
           <Section
             ref={sauceRef}
             title="Соусы"
             ingredients={sauces}
-            onIngredientClick={setSelectedIngredient}
+            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
         </div>
       </section>
       {openedIngredient && (
-        <Modal title="Детали ингредиента" onClose={() => setSelectedIngredient(null)}>
+        <Modal title="Детали ингредиента" onClose={() => dispatch(setIngredient(null))}>
           <IngredientDetails ingredient={openedIngredient} />
         </Modal>
       )}
