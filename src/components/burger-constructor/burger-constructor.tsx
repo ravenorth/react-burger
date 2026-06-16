@@ -16,6 +16,8 @@ import {
 } from '@services/burgerConstructor/burgerConstructorSlice.ts';
 import { useCreateOrderMutation } from '@services/order/orderApi.ts';
 
+import { ConstructorElementPlaceholder } from '../constructor-element-placeholder/constructor-element-placeholder.tsx';
+
 import type { TConstructorIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
@@ -78,7 +80,7 @@ const IngredientList = (): React.JSX.Element => {
 
   return (
     <div className={styles.list}>
-      {bun && (
+      {bun ? (
         <ConstructorElement
           extraClass="ml-4 mr-4"
           text={`${bun.name} (верх)`}
@@ -87,13 +89,19 @@ const IngredientList = (): React.JSX.Element => {
           isLocked={true}
           type="top"
         />
+      ) : (
+        <ConstructorElementPlaceholder text="Выберите булки" type="top" />
       )}
-      <div className={`${styles.otherIngredients} custom-scroll pl-4 pr-4`}>
-        {ingredients.map((ingredient) => (
-          <OptionalIngredient key={ingredient.key} ingredient={ingredient} />
-        ))}
-      </div>
-      {bun && (
+      {ingredients.length > 0 ? (
+        <div className={`${styles.otherIngredients} custom-scroll pl-4 pr-4`}>
+          {ingredients.map((ingredient) => (
+            <OptionalIngredient key={ingredient.key} ingredient={ingredient} />
+          ))}
+        </div>
+      ) : (
+        <ConstructorElementPlaceholder text="Выберите начинку" />
+      )}
+      {bun ? (
         <ConstructorElement
           extraClass="ml-4 mr-4"
           text={`${bun.name} (низ)`}
@@ -102,6 +110,8 @@ const IngredientList = (): React.JSX.Element => {
           isLocked={true}
           type="bottom"
         />
+      ) : (
+        <ConstructorElementPlaceholder text="Выберите булки" type="bottom" />
       )}
     </div>
   );
