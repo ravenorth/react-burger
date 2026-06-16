@@ -23,9 +23,11 @@
 }
 
 .list,
-.otherIngredients {
+.bun,
+.ingredients {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: calc(var(--offset-base-size) * 4);
 }
 
@@ -34,7 +36,18 @@
   min-height: 0;
 }
 
-.otherIngredients {
+.bun,
+.ingredients {
+  width: 100%;
+  scrollbar-gutter: stable;
+}
+
+.bun {
+  flex-shrink: 0;
+  overflow-y: hidden;
+}
+
+.ingredients {
   overflow-y: auto;
 }
 

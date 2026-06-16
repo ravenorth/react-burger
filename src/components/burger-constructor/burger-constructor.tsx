@@ -121,52 +121,52 @@ const IngredientList = ({
 
   return (
     <div className={styles.list}>
-      {bun ? (
-        <ConstructorElement
-          extraClass="ml-4 mr-4"
-          text={`${bun.name} (верх)`}
-          thumbnail={bun.image}
-          price={bun.price}
-          isLocked={true}
-          type="top"
-        />
-      ) : (
-        <ConstructorElementPlaceholder
-          text="Выберите булки"
-          type="top"
-          isTarget={bunTarget}
-        />
-      )}
-      {ingredients.length > 0 ? (
-        <div className={`${styles.otherIngredients} custom-scroll pl-4 pr-4`}>
-          {ingredients.map((ingredient) => (
+      <Bun bun={bun} type="top" isTarget={bunTarget} />
+      <div className={`${styles.ingredients} custom-scroll pl-4 pr-2`}>
+        {ingredients.length > 0 ? (
+          ingredients.map((ingredient) => (
             <Ingredient
               key={ingredient.key}
               ingredient={ingredient}
               onDelete={() => dispatch(removeIngredient(ingredient.key))}
             />
-          ))}
-        </div>
-      ) : (
-        <ConstructorElementPlaceholder
-          text="Выберите начинку"
-          isTarget={ingredientTarget}
-        />
-      )}
+          ))
+        ) : (
+          <ConstructorElementPlaceholder
+            text="Выберите начинку"
+            isTarget={ingredientTarget}
+          />
+        )}
+      </div>
+      <Bun bun={bun} type="bottom" isTarget={bunTarget} />
+    </div>
+  );
+};
+
+type TBunProps = {
+  bun: TIngredient | null;
+  type: 'top' | 'bottom';
+  isTarget: boolean;
+};
+
+const Bun = ({ bun, type, isTarget }: TBunProps): React.JSX.Element => {
+  const hint = type === 'top' ? 'верх' : 'низ';
+
+  return (
+    <div className={`${styles.bun} custom-scroll pl-4 pr-2`}>
       {bun ? (
         <ConstructorElement
-          extraClass="ml-4 mr-4"
-          text={`${bun.name} (низ)`}
+          text={`${bun.name} (${hint})`}
           thumbnail={bun.image}
           price={bun.price}
           isLocked={true}
-          type="bottom"
+          type={type}
         />
       ) : (
         <ConstructorElementPlaceholder
           text="Выберите булки"
-          type="bottom"
-          isTarget={bunTarget}
+          type={type}
+          isTarget={isTarget}
         />
       )}
     </div>
