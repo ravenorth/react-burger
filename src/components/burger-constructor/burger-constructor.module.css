@@ -38,7 +38,7 @@
   overflow-y: auto;
 }
 
-.optionalIngredient {
+.ingredient {
   display: flex;
   flex-direction: row;
   align-items: center;

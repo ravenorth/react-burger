@@ -6,6 +6,7 @@ import { BurgerIngredientsTabs } from '@components/burger-ingredients-tabs/burge
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
 import { Modal } from '@components/modal/modal.tsx';
 import { useBurgerIngredientsTabsController } from '@hooks/useBurgerIngredientsTabsController.ts';
+import { getIngredientsCountMap } from '@services/burgerConstructor/burgerConstructorSlice.ts';
 import {
   getIngredient,
   setIngredient,
@@ -29,6 +30,7 @@ export const BurgerIngredients = ({
 
   const dispatch = useDispatch();
   const openedIngredient = useSelector(getIngredient);
+  const countMap = useSelector(getIngredientsCountMap);
 
   const buns = useMemo(() => {
     return ingredients.filter((ingredient) => ingredient.type === 'bun');
@@ -61,18 +63,21 @@ export const BurgerIngredients = ({
             ref={bunRef}
             title="Булки"
             ingredients={buns}
+            countMap={countMap}
             onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
           <Section
             ref={mainRef}
             title="Начинки"
             ingredients={mains}
+            countMap={countMap}
             onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
           <Section
             ref={sauceRef}
             title="Соусы"
             ingredients={sauces}
+            countMap={countMap}
             onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
           />
         </div>
@@ -90,6 +95,7 @@ type TSectionProps = {
   ref?: RefObject<HTMLHeadingElement | null>;
   title: string;
   ingredients: TIngredient[];
+  countMap: Record<string, number>;
   onIngredientClick: (ingredient: TIngredient) => void;
 };
 
@@ -97,6 +103,7 @@ const Section = ({
   ref,
   title,
   ingredients,
+  countMap,
   onIngredientClick,
 }: TSectionProps): React.JSX.Element => {
   return (
@@ -107,16 +114,11 @@ const Section = ({
           <Ingredient
             key={ingredient._id}
             ingredient={ingredient}
-            count={getMockCount(ingredient)}
+            count={countMap[ingredient._id]}
             onClick={() => onIngredientClick(ingredient)}
           />
         ))}
       </div>
     </section>
   );
-};
-
-// TODO sprint2
-const getMockCount = (ingredient: TIngredient): number | undefined => {
-  return ingredient.price < 1000 ? 1 : undefined;
 };

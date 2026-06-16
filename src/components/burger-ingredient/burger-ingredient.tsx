@@ -1,4 +1,7 @@
 import { Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { useDrag } from 'react-dnd';
+
+import { BURGER_INGREDIENT_TYPE } from '@utils/dnd.ts';
 
 import type { TIngredient } from '@utils/types.ts';
 
@@ -15,8 +18,19 @@ export const Ingredient = ({
   count,
   onClick,
 }: TIngredientProps): React.JSX.Element => {
+  const [, dragRef] = useDrag({
+    type: BURGER_INGREDIENT_TYPE,
+    item: ingredient,
+  });
+
   return (
-    <div className={styles.burgerIngredient} onClick={onClick}>
+    <div
+      ref={(node) => {
+        dragRef(node);
+      }}
+      className={styles.burgerIngredient}
+      onClick={onClick}
+    >
       <img
         className={`${styles.image} ml-4 mr-4`}
         src={ingredient.image}

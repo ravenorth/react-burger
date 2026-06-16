@@ -5,20 +5,24 @@ import {
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDrop } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
 import {
+  addIngredient,
   getBun,
   getIngredients,
   getTotalPrice,
+  removeIngredient,
 } from '@services/burgerConstructor/burgerConstructorSlice.ts';
 import { useCreateOrderMutation } from '@services/order/orderApi.ts';
+import { BURGER_INGREDIENT_TYPE } from '@utils/dnd.ts';
 
 import { ConstructorElementPlaceholder } from '../constructor-element-placeholder/constructor-element-placeholder.tsx';
 
-import type { TConstructorIngredient } from '@utils/types';
+import type { TConstructorIngredient, TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
@@ -26,6 +30,29 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const total = useSelector(getTotalPrice);
   const bun = useSelector(getBun);
   const ingredients = useSelector(getIngredients);
+  const dispatch = useDispatch();
+
+  const [collected, dropTargetRef] = useDrop<
+    TIngredient,
+    void,
+    { isHover: boolean; isBun: boolean }
+  >({
+    accept: BURGER_INGREDIENT_TYPE,
+    drop(ingredient) {
+      dispatch(addIngredient(ingredient));
+    },
+    collect: (monitor) => {
+      const item = monitor.getItem<TIngredient>();
+      return {
+        isHover: monitor.isOver() && monitor.canDrop(),
+        isBun: item?.type === 'bun',
+      };
+    },
+  });
+
+  const { isHover, isBun } = collected;
+  const bunTarget = isHover && isBun;
+  const ingredientTarget = isHover && !isBun;
 
   const [createOrder, { data, isLoading }] = useCreateOrderMutation();
 
@@ -49,8 +76,13 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   return (
     <>
-      <section className={`${styles.burgerConstructor} mb-10`}>
-        <IngredientList />
+      <section
+        ref={(node) => {
+          dropTargetRef(node);
+        }}
+        className={`${styles.burgerConstructor} mb-10`}
+      >
+        <IngredientList bunTarget={bunTarget} ingredientTarget={ingredientTarget} />
         <footer className={`${styles.info} pl-4 pr-4 pt-10`}>
           <span className={`${styles.price} text text_type_digits-medium mr-10`}>
             {total} <CurrencyIcon className={styles.icon} type="primary" />
@@ -74,9 +106,18 @@ export const BurgerConstructor = (): React.JSX.Element => {
   );
 };
 
-const IngredientList = (): React.JSX.Element => {
+type TIngredientListProps = {
+  bunTarget: boolean;
+  ingredientTarget: boolean;
+};
+
+const IngredientList = ({
+  bunTarget,
+  ingredientTarget,
+}: TIngredientListProps): React.JSX.Element => {
   const bun = useSelector(getBun);
   const ingredients = useSelector(getIngredients);
+  const dispatch = useDispatch();
 
   return (
     <div className={styles.list}>
@@ -90,16 +131,27 @@ const IngredientList = (): React.JSX.Element => {
           type="top"
         />
       ) : (
-        <ConstructorElementPlaceholder text="Выберите булки" type="top" />
+        <ConstructorElementPlaceholder
+          text="Выберите булки"
+          type="top"
+          isTarget={bunTarget}
+        />
       )}
       {ingredients.length > 0 ? (
         <div className={`${styles.otherIngredients} custom-scroll pl-4 pr-4`}>
           {ingredients.map((ingredient) => (
-            <OptionalIngredient key={ingredient.key} ingredient={ingredient} />
+            <Ingredient
+              key={ingredient.key}
+              ingredient={ingredient}
+              onDelete={() => dispatch(removeIngredient(ingredient.key))}
+            />
           ))}
         </div>
       ) : (
-        <ConstructorElementPlaceholder text="Выберите начинку" />
+        <ConstructorElementPlaceholder
+          text="Выберите начинку"
+          isTarget={ingredientTarget}
+        />
       )}
       {bun ? (
         <ConstructorElement
@@ -111,27 +163,31 @@ const IngredientList = (): React.JSX.Element => {
           type="bottom"
         />
       ) : (
-        <ConstructorElementPlaceholder text="Выберите булки" type="bottom" />
+        <ConstructorElementPlaceholder
+          text="Выберите булки"
+          type="bottom"
+          isTarget={bunTarget}
+        />
       )}
     </div>
   );
 };
 
-type TOptionalIngredientProps = {
+type TIngredientProps = {
   ingredient: TConstructorIngredient;
+  onDelete: () => void;
 };
 
-const OptionalIngredient = ({
-  ingredient,
-}: TOptionalIngredientProps): React.JSX.Element => {
+const Ingredient = ({ ingredient, onDelete }: TIngredientProps): React.JSX.Element => {
   return (
-    <div className={styles.optionalIngredient}>
+    <div className={styles.ingredient}>
       <DragIcon type="primary" />
       <ConstructorElement
         key={ingredient.key}
         text={ingredient.name}
         thumbnail={ingredient.image}
         price={ingredient.price}
+        handleClose={onDelete}
       />
     </div>
   );
