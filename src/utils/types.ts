@@ -15,4 +15,11 @@ type TIngredient = {
   __v: number;
 };
 
-export type { TIngredientType, TIngredient };
+type TConstructorIngredient = TIngredient & { key: string };
+
+type TDragItem = {
+  key: string;
+  index: number;
+};
+
+export type { TIngredientType, TIngredient, TConstructorIngredient, TDragItem };

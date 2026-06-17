@@ -3,7 +3,7 @@ import doneIcon from '@assets/images/done.svg';
 import styles from './order-details.module.css';
 
 type TOrderDetailsProps = {
-  id: string;
+  id: number;
 };
 
 export function OrderDetails({ id }: TOrderDetailsProps): React.JSX.Element {
