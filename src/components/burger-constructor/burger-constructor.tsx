@@ -4,8 +4,9 @@ import {
   CurrencyIcon,
   DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
+import { clsx } from 'clsx';
 import { useCallback, useState } from 'react';
-import { useDrop } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
@@ -15,14 +16,15 @@ import {
   getBun,
   getIngredients,
   getTotalPrice,
+  moveIngredient,
   removeIngredient,
 } from '@services/burgerConstructor/burgerConstructorSlice.ts';
 import { useCreateOrderMutation } from '@services/order/orderApi.ts';
-import { BURGER_INGREDIENT_TYPE } from '@utils/dnd.ts';
+import { BURGER_INGREDIENT_TYPE, CONSTRUCTOR_INGREDIENT_TYPE } from '@utils/dnd.ts';
 
 import { ConstructorElementPlaceholder } from '../constructor-element-placeholder/constructor-element-placeholder.tsx';
 
-import type { TConstructorIngredient, TIngredient } from '@utils/types';
+import type { TConstructorIngredient, TDragItem, TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
@@ -122,12 +124,13 @@ const IngredientList = ({
   return (
     <div className={styles.list}>
       <Bun bun={bun} type="top" isTarget={bunTarget} />
-      <div className={`${styles.ingredients} custom-scroll pl-4 pr-2`}>
+      <div className={`${styles.ingredients} custom-scroll pl-4 pr-2 mt-4 mb-4`}>
         {ingredients.length > 0 ? (
-          ingredients.map((ingredient) => (
+          ingredients.map((ingredient, index) => (
             <Ingredient
               key={ingredient.key}
               ingredient={ingredient}
+              index={index}
               onDelete={() => dispatch(removeIngredient(ingredient.key))}
             />
           ))
@@ -175,15 +178,45 @@ const Bun = ({ bun, type, isTarget }: TBunProps): React.JSX.Element => {
 
 type TIngredientProps = {
   ingredient: TConstructorIngredient;
+  index: number;
   onDelete: () => void;
 };
 
-const Ingredient = ({ ingredient, onDelete }: TIngredientProps): React.JSX.Element => {
+const Ingredient = ({
+  ingredient,
+  index,
+  onDelete,
+}: TIngredientProps): React.JSX.Element => {
+  const dispatch = useDispatch();
+
+  const [{ isDragging }, dragRef] = useDrag({
+    type: CONSTRUCTOR_INGREDIENT_TYPE,
+    item: (): TDragItem => ({ key: ingredient.key, index }),
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, dropRef] = useDrop<TDragItem>({
+    accept: CONSTRUCTOR_INGREDIENT_TYPE,
+    drop(item, monitor) {
+      if (item.index === index || !monitor.canDrop()) return;
+      dispatch(moveIngredient({ fromIndex: item.index, toIndex: index }));
+    },
+    collect: (monitor) => ({
+      isHover: monitor.isOver(),
+    }),
+  });
+
   return (
-    <div className={styles.ingredient}>
+    <div
+      ref={(node) => {
+        dragRef(dropRef(node));
+      }}
+      className={clsx(styles.ingredient, isDragging && styles.dragging)}
+    >
       <DragIcon type="primary" />
       <ConstructorElement
-        key={ingredient.key}
         text={ingredient.name}
         thumbnail={ingredient.image}
         price={ingredient.price}

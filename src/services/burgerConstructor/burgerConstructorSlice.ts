@@ -33,6 +33,11 @@ export const burgerConstructorSlice = createSlice({
         (item) => item.key !== action.payload
       );
     },
+    moveIngredient(state, action: { payload: { fromIndex: number; toIndex: number } }) {
+      const { fromIndex, toIndex } = action.payload;
+      const [moved] = state.ingredients.splice(fromIndex, 1);
+      state.ingredients.splice(toIndex, 0, moved);
+    },
   },
   selectors: {
     getState: (state) => state,
@@ -67,7 +72,8 @@ export const burgerConstructorSlice = createSlice({
   },
 });
 
-export const { addIngredient, removeIngredient } = burgerConstructorSlice.actions;
+export const { addIngredient, removeIngredient, moveIngredient } =
+  burgerConstructorSlice.actions;
 
 export const { getBun, getIngredients, getTotalPrice, getIngredientsCountMap } =
   burgerConstructorSlice.selectors;

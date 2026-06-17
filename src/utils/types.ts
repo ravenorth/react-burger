@@ -17,4 +17,9 @@ type TIngredient = {
 
 type TConstructorIngredient = TIngredient & { key: string };
 
-export type { TIngredientType, TIngredient, TConstructorIngredient };
+type TDragItem = {
+  key: string;
+  index: number;
+};
+
+export type { TIngredientType, TIngredient, TConstructorIngredient, TDragItem };

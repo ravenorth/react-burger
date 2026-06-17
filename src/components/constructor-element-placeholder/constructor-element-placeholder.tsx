@@ -13,11 +13,16 @@ export const ConstructorElementPlaceholder = ({
   type,
   isTarget = false,
 }: TConstructorElementPlaceholderProps): React.JSX.Element => {
-  const className = clsx(
-    'text text_type_main-default',
-    styles.placeholder,
-    !!type && styles[type],
-    isTarget && styles.target
+  return (
+    <div
+      className={clsx(
+        'text text_type_main-default',
+        styles.placeholder,
+        !!type && styles[type],
+        isTarget && styles.target
+      )}
+    >
+      {text}
+    </div>
   );
-  return <div className={className}>{text}</div>;
 };
