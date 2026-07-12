@@ -9,6 +9,7 @@ import { Feed } from '@pages/feed/feed.tsx';
 import { ForgotPassword } from '@pages/forgot-password/forgot-password.tsx';
 import { Home } from '@pages/home/home.tsx';
 import { Login } from '@pages/login/login.tsx';
+import { NotFound } from '@pages/not-found/not-found.tsx';
 import { ProfileForm } from '@pages/profile-form/profile-form.tsx';
 import { ProfileOrders } from '@pages/profile-orders/profile-orders.tsx';
 import { Profile } from '@pages/profile/profile.tsx';
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
             element: <ProfileOrders />,
           },
         ],
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },

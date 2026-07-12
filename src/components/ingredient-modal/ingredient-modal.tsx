@@ -4,15 +4,10 @@ import { IngredientDetails } from '@components/ingredient-details/ingredient-det
 import { Modal } from '@components/modal/modal';
 import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi';
 
-export const IngredientModal = (): React.JSX.Element | null => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { data: ingredients = [] } = useGetIngredientsQuery();
-  const ingredient = ingredients.find((item) => item._id === id);
+import styles from './ingredient-modal.module.css';
 
-  if (!ingredient) {
-    return null;
-  }
+export const IngredientModal = (): React.JSX.Element => {
+  const navigate = useNavigate();
 
   return (
     <Modal
@@ -21,7 +16,26 @@ export const IngredientModal = (): React.JSX.Element | null => {
         void navigate('/');
       }}
     >
-      <IngredientDetails ingredient={ingredient} />
+      <Content />
     </Modal>
   );
+};
+
+const Content = (): React.JSX.Element => {
+  const { id } = useParams<{ id: string }>();
+  const { data: ingredients = [] } = useGetIngredientsQuery();
+  const ingredient = ingredients.find((item) => item._id === id);
+
+  if (!ingredient) {
+    return (
+      <div className={styles.notFound}>
+        <p className="text text_type_main-medium mt-6">Ингредиент не найден</p>
+        <p className="text text_type_main-default text_color_inactive mt-4">
+          Возможно, он был удалён
+        </p>
+      </div>
+    );
+  }
+
+  return <IngredientDetails ingredient={ingredient} />;
 };
