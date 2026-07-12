@@ -7,8 +7,9 @@
 
 .nav {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
-  max-width: 320px;
+  width: 320px;
 }
 
 .navLink {
@@ -32,14 +33,7 @@
   color: var(--text-primary-color);
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: calc(var(--offset-base-size) * 6);
-}
-
-.buttons {
-  display: flex;
-  gap: calc(var(--offset-base-size) * 5);
+.content {
+  width: 100%;
+  min-width: 480px;
 }

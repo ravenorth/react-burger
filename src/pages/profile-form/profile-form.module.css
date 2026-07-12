@@ -1,0 +1,11 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--offset-base-size) * 6);
+}
+
+.buttons {
+  display: flex;
+  gap: calc(var(--offset-base-size) * 5);
+}
