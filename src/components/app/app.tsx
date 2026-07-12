@@ -8,7 +8,7 @@ import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi.ts'
 import styles from './app.module.css';
 
 export const App = (): React.JSX.Element => {
-  const { data: ingredients, isLoading } = useGetIngredientsQuery();
+  const { isLoading } = useGetIngredientsQuery();
 
   return (
     <div className={styles.app}>
@@ -16,9 +16,9 @@ export const App = (): React.JSX.Element => {
       <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
         Соберите бургер
       </h1>
-      {!isLoading && ingredients ? (
+      {!isLoading ? (
         <main className={`${styles.main} pl-5 pr-5`}>
-          <BurgerIngredients ingredients={ingredients} />
+          <BurgerIngredients />
           <BurgerConstructor />
         </main>
       ) : (

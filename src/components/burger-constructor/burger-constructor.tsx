@@ -7,7 +7,6 @@ import {
 import { clsx } from 'clsx';
 import { useCallback, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
@@ -18,7 +17,9 @@ import {
   getTotalPrice,
   moveIngredient,
   removeIngredient,
+  resetConstructor,
 } from '@services/burgerConstructor/burgerConstructorSlice.ts';
+import { useAppDispatch, useAppSelector } from '@services/hooks.ts';
 import { useCreateOrderMutation } from '@services/order/orderApi.ts';
 import { BURGER_INGREDIENT_TYPE, CONSTRUCTOR_INGREDIENT_TYPE } from '@utils/dnd.ts';
 
@@ -29,10 +30,10 @@ import type { TConstructorIngredient, TDragItem, TIngredient } from '@utils/type
 import styles from './burger-constructor.module.css';
 
 export const BurgerConstructor = (): React.JSX.Element => {
-  const total = useSelector(getTotalPrice);
-  const bun = useSelector(getBun);
-  const ingredients = useSelector(getIngredients);
-  const dispatch = useDispatch();
+  const total = useAppSelector(getTotalPrice);
+  const bun = useAppSelector(getBun);
+  const ingredients = useAppSelector(getIngredients);
+  const dispatch = useAppDispatch();
 
   const [collected, dropTargetRef] = useDrop<
     TIngredient,
@@ -67,6 +68,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
     createOrder({ ingredients: ingredientIds })
       .then(() => {
+        dispatch(resetConstructor());
         setOrderDetailsOpened(true);
       })
       .catch(console.error);
@@ -117,9 +119,9 @@ const IngredientList = ({
   bunTarget,
   ingredientTarget,
 }: TIngredientListProps): React.JSX.Element => {
-  const bun = useSelector(getBun);
-  const ingredients = useSelector(getIngredients);
-  const dispatch = useDispatch();
+  const bun = useAppSelector(getBun);
+  const ingredients = useAppSelector(getIngredients);
+  const dispatch = useAppDispatch();
 
   return (
     <div className={styles.list}>
@@ -187,7 +189,7 @@ const Ingredient = ({
   index,
   onDelete,
 }: TIngredientProps): React.JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [{ isDragging }, dragRef] = useDrag({
     type: CONSTRUCTOR_INGREDIENT_TYPE,

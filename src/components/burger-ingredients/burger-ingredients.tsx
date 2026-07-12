@@ -1,5 +1,4 @@
 import { type RefObject, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { Ingredient } from '@components/burger-ingredient/burger-ingredient.tsx';
 import { BurgerIngredientsTabs } from '@components/burger-ingredients-tabs/burger-ingredients-tabs.tsx';
@@ -7,30 +6,27 @@ import { IngredientDetails } from '@components/ingredient-details/ingredient-det
 import { Modal } from '@components/modal/modal.tsx';
 import { useBurgerIngredientsTabsController } from '@hooks/useBurgerIngredientsTabsController.ts';
 import { getIngredientsCountMap } from '@services/burgerConstructor/burgerConstructorSlice.ts';
+import { useAppDispatch, useAppSelector } from '@services/hooks.ts';
 import {
   getIngredient,
   setIngredient,
 } from '@services/ingredientDetails/ingredientDetailsSlice.ts';
+import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi.ts';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-ingredients.module.css';
 
-type TBurgerIngredientsProps = {
-  ingredients: TIngredient[];
-};
-
-export const BurgerIngredients = ({
-  ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
+export const BurgerIngredients = (): React.JSX.Element => {
+  const { data: ingredients = [] } = useGetIngredientsQuery();
   const containerRef = useRef<HTMLDivElement>(null);
   const bunRef = useRef<HTMLHeadingElement>(null);
   const mainRef = useRef<HTMLHeadingElement>(null);
   const sauceRef = useRef<HTMLHeadingElement>(null);
 
-  const dispatch = useDispatch();
-  const openedIngredient = useSelector(getIngredient);
-  const countMap = useSelector(getIngredientsCountMap);
+  const dispatch = useAppDispatch();
+  const openedIngredient = useAppSelector(getIngredient);
+  const countMap = useAppSelector(getIngredientsCountMap);
 
   const buns = useMemo(() => {
     return ingredients.filter((ingredient) => ingredient.type === 'bun');
