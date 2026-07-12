@@ -2,15 +2,9 @@ import { type RefObject, useMemo, useRef } from 'react';
 
 import { Ingredient } from '@components/burger-ingredient/burger-ingredient.tsx';
 import { BurgerIngredientsTabs } from '@components/burger-ingredients-tabs/burger-ingredients-tabs.tsx';
-import { IngredientDetails } from '@components/ingredient-details/ingredient-details.tsx';
-import { Modal } from '@components/modal/modal.tsx';
 import { useBurgerIngredientsTabsController } from '@hooks/useBurgerIngredientsTabsController.ts';
 import { getIngredientsCountMap } from '@services/burgerConstructor/burgerConstructorSlice.ts';
-import { useAppDispatch, useAppSelector } from '@services/hooks.ts';
-import {
-  getIngredient,
-  setIngredient,
-} from '@services/ingredientDetails/ingredientDetailsSlice.ts';
+import { useAppSelector } from '@services/hooks.ts';
 import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi.ts';
 
 import type { TIngredient } from '@utils/types';
@@ -24,8 +18,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const mainRef = useRef<HTMLHeadingElement>(null);
   const sauceRef = useRef<HTMLHeadingElement>(null);
 
-  const dispatch = useAppDispatch();
-  const openedIngredient = useAppSelector(getIngredient);
   const countMap = useAppSelector(getIngredientsCountMap);
 
   const buns = useMemo(() => {
@@ -47,43 +39,18 @@ export const BurgerIngredients = (): React.JSX.Element => {
     });
 
   return (
-    <>
-      <section className={`${styles.burgerIngredients} mb-10`}>
-        <BurgerIngredientsTabs selectedTab={selectedTab} onTabClick={handleSelectTab} />
-        <div
-          className={`${styles.sections} custom-scroll`}
-          ref={containerRef}
-          onScroll={handleContainerScroll}
-        >
-          <Section
-            ref={bunRef}
-            title="Булки"
-            ingredients={buns}
-            countMap={countMap}
-            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
-          />
-          <Section
-            ref={mainRef}
-            title="Начинки"
-            ingredients={mains}
-            countMap={countMap}
-            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
-          />
-          <Section
-            ref={sauceRef}
-            title="Соусы"
-            ingredients={sauces}
-            countMap={countMap}
-            onIngredientClick={(ingredient) => dispatch(setIngredient(ingredient))}
-          />
-        </div>
-      </section>
-      {openedIngredient && (
-        <Modal title="Детали ингредиента" onClose={() => dispatch(setIngredient(null))}>
-          <IngredientDetails ingredient={openedIngredient} />
-        </Modal>
-      )}
-    </>
+    <section className={`${styles.burgerIngredients} mb-10`}>
+      <BurgerIngredientsTabs selectedTab={selectedTab} onTabClick={handleSelectTab} />
+      <div
+        className={`${styles.sections} custom-scroll`}
+        ref={containerRef}
+        onScroll={handleContainerScroll}
+      >
+        <Section ref={bunRef} title="Булки" ingredients={buns} countMap={countMap} />
+        <Section ref={mainRef} title="Начинки" ingredients={mains} countMap={countMap} />
+        <Section ref={sauceRef} title="Соусы" ingredients={sauces} countMap={countMap} />
+      </div>
+    </section>
   );
 };
 
@@ -92,7 +59,6 @@ type TSectionProps = {
   title: string;
   ingredients: TIngredient[];
   countMap: Record<string, number>;
-  onIngredientClick: (ingredient: TIngredient) => void;
 };
 
 const Section = ({
@@ -100,7 +66,6 @@ const Section = ({
   title,
   ingredients,
   countMap,
-  onIngredientClick,
 }: TSectionProps): React.JSX.Element => {
   return (
     <section ref={ref} className="mt-10">
@@ -111,7 +76,6 @@ const Section = ({
             key={ingredient._id}
             ingredient={ingredient}
             count={countMap[ingredient._id]}
-            onClick={() => onIngredientClick(ingredient)}
           />
         ))}
       </div>

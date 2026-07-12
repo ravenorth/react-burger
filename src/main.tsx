@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { App } from '@components/app/app';
+import { IngredientModal } from '@components/ingredient-modal/ingredient-modal';
 import { Home } from '@pages/home/home.tsx';
 import store from '@services/store';
 
@@ -15,8 +16,17 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        index: true,
         element: <Home />,
+        children: [
+          {
+            index: true,
+            element: <></>,
+          },
+          {
+            path: 'ingredients/:id',
+            element: <IngredientModal />,
+          },
+        ],
       },
     ],
   },
