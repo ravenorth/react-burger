@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { App } from '@components/app/app';
 import { IngredientModal } from '@components/ingredient-modal/ingredient-modal';
+import { ProtectedRoute } from '@components/protected-route/protected-route';
 import { Feed } from '@pages/feed/feed.tsx';
 import { ForgotPassword } from '@pages/forgot-password/forgot-password.tsx';
 import { Home } from '@pages/home/home.tsx';
@@ -39,19 +40,35 @@ const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <Login />,
+        element: (
+          <ProtectedRoute onlyUnAuth>
+            <Login />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'register',
-        element: <Register />,
+        element: (
+          <ProtectedRoute onlyUnAuth>
+            <Register />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'forgot-password',
-        element: <ForgotPassword />,
+        element: (
+          <ProtectedRoute onlyUnAuth>
+            <ForgotPassword />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'reset-password',
-        element: <ResetPassword />,
+        element: (
+          <ProtectedRoute onlyUnAuth>
+            <ResetPassword />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'feed',
@@ -59,7 +76,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'profile',
-        element: <Profile />,
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
         children: [
           {
             index: true,

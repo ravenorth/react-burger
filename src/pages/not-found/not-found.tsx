@@ -15,7 +15,7 @@ export const NotFound = (): React.JSX.Element => {
         type="primary"
         size="medium"
         onClick={() => {
-          void navigate('/');
+          void navigate('/', { replace: true });
         }}
       >
         На главную

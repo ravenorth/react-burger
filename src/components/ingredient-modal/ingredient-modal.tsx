@@ -31,7 +31,7 @@ const Content = (): React.JSX.Element => {
       <div className={styles.notFound}>
         <p className="text text_type_main-medium mt-6">Ингредиент не найден</p>
         <p className="text text_type_main-default text_color_inactive mt-4">
-          Возможно, он был удалён
+          Возможно, он был убран из меню
         </p>
       </div>
     );
