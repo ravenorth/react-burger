@@ -22,4 +22,9 @@ type TDragItem = {
   index: number;
 };
 
-export type { TIngredientType, TIngredient, TConstructorIngredient, TDragItem };
+type TUser = {
+  email: string;
+  name: string;
+};
+
+export type { TIngredientType, TIngredient, TConstructorIngredient, TDragItem, TUser };

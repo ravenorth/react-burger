@@ -3,18 +3,29 @@ import {
   EmailInput,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useLoginMutation } from '@services/user/userApi.ts';
 
 import styles from './login.module.css';
 
 export const Login = (): React.JSX.Element => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [login, { isLoading }] = useLoginMutation();
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      login({ email, password }).catch(console.error);
+    },
+    [email, password, login]
+  );
 
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <h1 className="text text_type_main-medium">Вход</h1>
         <EmailInput
           value={email}
@@ -26,7 +37,7 @@ export const Login = (): React.JSX.Element => {
           placeholder="Пароль"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button htmlType="submit" type="primary" size="medium">
+        <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
           Войти
         </Button>
       </form>

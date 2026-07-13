@@ -1,9 +1,18 @@
 import { clsx } from 'clsx';
+import { useCallback } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+
+import { useLogoutMutation } from '@services/user/userApi.ts';
 
 import styles from './profile.module.css';
 
 export const Profile = (): React.JSX.Element => {
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = useCallback(() => {
+    logout().catch(console.error);
+  }, [logout]);
+
   return (
     <div className={styles.container}>
       <nav className={styles.nav}>
@@ -35,7 +44,7 @@ export const Profile = (): React.JSX.Element => {
         <button
           type="button"
           className={clsx('text text_type_main-medium', styles.navLink)}
-          onClick={() => console.log('logout')}
+          onClick={handleLogout}
         >
           Выход
         </button>
