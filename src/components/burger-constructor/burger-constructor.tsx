@@ -7,6 +7,7 @@ import {
 import { clsx } from 'clsx';
 import { useCallback, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { useNavigate } from 'react-router-dom';
 
 import { Modal } from '@components/modal/modal.tsx';
 import { OrderDetails } from '@components/order-details/order-details.tsx';
@@ -21,6 +22,7 @@ import {
 } from '@services/burgerConstructor/burgerConstructorSlice.ts';
 import { useAppDispatch, useAppSelector } from '@services/hooks.ts';
 import { useCreateOrderMutation } from '@services/order/orderApi.ts';
+import { getUser } from '@services/user/userSlice.ts';
 import { BURGER_INGREDIENT_TYPE, CONSTRUCTOR_INGREDIENT_TYPE } from '@utils/dnd.ts';
 
 import { ConstructorElementPlaceholder } from '../constructor-element-placeholder/constructor-element-placeholder.tsx';
@@ -33,7 +35,9 @@ export const BurgerConstructor = (): React.JSX.Element => {
   const total = useAppSelector(getTotalPrice);
   const bun = useAppSelector(getBun);
   const ingredients = useAppSelector(getIngredients);
+  const user = useAppSelector(getUser);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [collected, dropTargetRef] = useDrop<
     TIngredient,
@@ -61,7 +65,12 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   const [orderDetailsOpened, setOrderDetailsOpened] = useState(false);
 
-  const handleOrderClick = useCallback(() => {
+  const handleCreateOrder = useCallback(() => {
+    if (!user) {
+      void navigate('/login');
+      return;
+    }
+
     if (!bun) return;
 
     const ingredientIds = [bun._id, ...ingredients.map((item) => item._id), bun._id];
@@ -72,7 +81,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
         setOrderDetailsOpened(true);
       })
       .catch(console.error);
-  }, [bun, ingredients, createOrder]);
+  }, [bun, ingredients, user, navigate, createOrder]);
 
   const handleCloseModal = useCallback(() => {
     setOrderDetailsOpened(false);
@@ -94,7 +103,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
           <Button
             htmlType="button"
             size="large"
-            onClick={handleOrderClick}
+            onClick={handleCreateOrder}
             disabled={isLoading || !bun}
           >
             {isLoading ? 'Оформляем...' : 'Оформить заказ'}

@@ -3,9 +3,10 @@ import { fetchWithRefresh, getAccessToken } from './token.ts';
 export const baseQueryWithRefresh = async (args: {
   url: string;
   method?: string;
+  body?: unknown;
   [key: string]: unknown;
 }): Promise<{ data: unknown } | { error: unknown }> => {
-  const { url, method = 'GET', ...rest } = args;
+  const { url, method = 'GET', body, ...rest } = args;
   const token = getAccessToken();
 
   const headers: Record<string, string> = {
@@ -16,9 +17,10 @@ export const baseQueryWithRefresh = async (args: {
     headers.authorization = token;
   }
 
-  const options = {
+  const options: RequestInit & Record<string, unknown> = {
     method,
     headers,
+    body: body ? JSON.stringify(body) : undefined,
     ...rest,
   };
 

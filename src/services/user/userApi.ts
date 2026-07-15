@@ -43,7 +43,7 @@ export const userApi = createApi({
       query: (credentials) => ({
         url: apiUrls.register,
         method: 'POST',
-        body: JSON.stringify(credentials),
+        body: credentials,
       }),
       transformResponse: (response: TAuthResponse) => {
         setTokens(response.accessToken, response.refreshToken);
@@ -54,7 +54,7 @@ export const userApi = createApi({
       query: (credentials) => ({
         url: apiUrls.login,
         method: 'POST',
-        body: JSON.stringify(credentials),
+        body: credentials,
       }),
       transformResponse: (response: TAuthResponse) => {
         setTokens(response.accessToken, response.refreshToken);
@@ -72,7 +72,7 @@ export const userApi = createApi({
       query: () => ({
         url: apiUrls.logout,
         method: 'POST',
-        body: JSON.stringify({ token: getRefreshToken() }),
+        body: { token: getRefreshToken() },
       }),
       transformResponse: () => {
         clearTokens();
@@ -82,7 +82,7 @@ export const userApi = createApi({
       query: (body) => ({
         url: apiUrls.updateUser,
         method: 'PATCH',
-        body: JSON.stringify(body),
+        body,
       }),
       transformResponse: (response: TUpdateUserResponse) => response.user,
     }),

@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
+import { baseQueryWithRefresh } from '@utils/api.ts';
 import { apiUrls } from '@utils/apiUrls.ts';
 
 type TCreateOrderRequest = {
@@ -16,9 +17,7 @@ type TOrderResponse = {
 
 export const orderApi = createApi({
   reducerPath: 'ordersApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: apiUrls.baseUrl,
-  }),
+  baseQuery: baseQueryWithRefresh,
   endpoints: (builder) => ({
     createOrder: builder.mutation<TOrderResponse, TCreateOrderRequest>({
       query: (body) => ({
