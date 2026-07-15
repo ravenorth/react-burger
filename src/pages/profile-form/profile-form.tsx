@@ -4,8 +4,9 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
+import { useForm } from '@hooks/useForm.ts';
 import { useAppSelector } from '@services/hooks.ts';
 import { useUpdateUserMutation } from '@services/user/userApi.ts';
 import { getUser } from '@services/user/userSlice.ts';
@@ -14,49 +15,53 @@ import styles from './profile-form.module.css';
 
 export const ProfileForm = (): React.JSX.Element | null => {
   const user = useAppSelector(getUser);
+  const { values, handleChange, setValues } = useForm({
+    name: user?.name ?? '',
+    email: user?.email ?? '',
+    password: '',
+  });
   const [updateUser, { isLoading }] = useUpdateUserMutation();
 
-  const [name, setName] = useState(user?.name ?? '');
-  const [email, setEmail] = useState(user?.email ?? '');
-  const [password, setPassword] = useState('');
-
-  const isEdited = name !== user?.name || email !== user?.email || !!password;
+  const isEdited =
+    values.name !== user?.name || values.email !== user?.email || !!values.password;
 
   const handleCancel = useCallback(() => {
     if (!user) return;
-    setName(user.name);
-    setEmail(user.email);
-    setPassword('');
-  }, [user]);
+    setValues({ name: user.name, email: user.email, password: '' });
+  }, [user, setValues]);
 
   const handleSave = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      updateUser({ name, email, password })
+      if (!user) return;
+      updateUser(values)
         .unwrap()
-        .then(() => setPassword(''))
+        .then(() => setValues((prev) => ({ ...prev, password: '' })))
         .catch(console.error);
     },
-    [name, email, password, updateUser, user]
+    [values, updateUser, setValues, user]
   );
 
   return (
     <form className={styles.form} onSubmit={handleSave}>
       <Input
-        value={name}
+        value={values.name}
+        name="name"
         placeholder="Имя"
         icon="EditIcon"
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleChange}
       />
       <EmailInput
-        value={email}
+        value={values.email}
+        name="email"
         placeholder="Логин"
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleChange}
       />
       <PasswordInput
-        value={password}
+        value={values.password}
+        name="password"
         placeholder="Пароль"
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={handleChange}
       />
       {isEdited && (
         <div className={styles.buttons}>

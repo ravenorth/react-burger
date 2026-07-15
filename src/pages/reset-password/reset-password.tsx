@@ -3,9 +3,10 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm.ts';
 import { useResetPasswordMutation } from '@services/password/passwordApi.ts';
 import {
   clearResetPasswordVisited,
@@ -15,15 +16,14 @@ import {
 import styles from './reset-password.module.css';
 
 export const ResetPassword = (): React.JSX.Element => {
-  const [password, setPassword] = useState('');
-  const [code, setCode] = useState('');
+  const { values, handleChange } = useForm({ password: '', code: '' });
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const navigate = useNavigate();
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      resetPassword({ password, token: code })
+      resetPassword({ password: values.password, token: values.code })
         .unwrap()
         .then(() => {
           clearResetPasswordVisited();
@@ -31,7 +31,7 @@ export const ResetPassword = (): React.JSX.Element => {
         })
         .catch(console.error);
     },
-    [password, code, resetPassword, navigate]
+    [values, resetPassword, navigate]
   );
 
   if (!getResetPasswordVisited()) {
@@ -43,14 +43,16 @@ export const ResetPassword = (): React.JSX.Element => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <h1 className="text text_type_main-medium">Восстановление пароля</h1>
         <PasswordInput
-          value={password}
+          value={values.password}
+          name="password"
           placeholder="Введите новый пароль"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handleChange}
         />
         <Input
-          value={code}
+          value={values.code}
+          name="code"
           placeholder="Введите код из письма"
-          onChange={(e) => setCode(e.target.value)}
+          onChange={handleChange}
         />
         <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
           Сохранить

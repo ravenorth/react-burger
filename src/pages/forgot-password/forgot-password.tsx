@@ -1,21 +1,22 @@
 import { Button, EmailInput } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm.ts';
 import { useForgotPasswordMutation } from '@services/password/passwordApi.ts';
 import { setResetPasswordVisited } from '@utils/resetPassword.ts';
 
 import styles from './forgot-password.module.css';
 
 export const ForgotPassword = (): React.JSX.Element => {
-  const [email, setEmail] = useState('');
+  const { values, handleChange } = useForm({ email: '' });
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const navigate = useNavigate();
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      forgotPassword({ email })
+      forgotPassword(values)
         .unwrap()
         .then(() => {
           setResetPasswordVisited();
@@ -23,7 +24,7 @@ export const ForgotPassword = (): React.JSX.Element => {
         })
         .catch(console.error);
     },
-    [email, forgotPassword, navigate]
+    [values, forgotPassword, navigate]
   );
 
   return (
@@ -31,9 +32,10 @@ export const ForgotPassword = (): React.JSX.Element => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <h1 className="text text_type_main-medium">Восстановление пароля</h1>
         <EmailInput
-          value={email}
+          value={values.email}
+          name="email"
           placeholder="Укажите e-mail"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleChange}
         />
         <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
           Восстановить

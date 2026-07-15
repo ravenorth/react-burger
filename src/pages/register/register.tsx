@@ -4,25 +4,24 @@ import {
   Input,
   PasswordInput,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useForm } from '@hooks/useForm.ts';
 import { useRegisterMutation } from '@services/user/userApi.ts';
 
 import styles from './register.module.css';
 
 export const Register = (): React.JSX.Element => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { values, handleChange } = useForm({ name: '', email: '', password: '' });
   const [register, { isLoading }] = useRegisterMutation();
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      register({ email, password, name }).unwrap().catch(console.error);
+      register(values).unwrap().catch(console.error);
     },
-    [email, password, name, register]
+    [values, register]
   );
 
   return (
@@ -30,19 +29,22 @@ export const Register = (): React.JSX.Element => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <h1 className="text text_type_main-medium">Регистрация</h1>
         <Input
-          value={name}
+          value={values.name}
+          name="name"
           placeholder="Имя"
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleChange}
         />
         <EmailInput
-          value={email}
+          value={values.email}
+          name="email"
           placeholder="E-mail"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleChange}
         />
         <PasswordInput
-          value={password}
+          value={values.password}
+          name="password"
           placeholder="Пароль"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handleChange}
         />
         <Button htmlType="submit" type="primary" size="medium" disabled={isLoading}>
           Зарегистрироваться
