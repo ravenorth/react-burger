@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { useAppSelector } from '@services/hooks.ts';
-import { getIsAuthChecked, getUser } from '@services/user/slice.ts';
+import { getIsAuthChecked, getUser } from '@services/user/userSlice.ts';
 
 type TProtectedRouteProps = {
   onlyUnAuth?: boolean;

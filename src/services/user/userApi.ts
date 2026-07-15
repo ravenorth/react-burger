@@ -17,11 +17,22 @@ type TLoginRequest = {
   password: string;
 };
 
+type TUpdateUserRequest = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 type TAuthResponse = {
   success: boolean;
   user: TUser;
   accessToken: string;
   refreshToken: string;
+};
+
+type TUpdateUserResponse = {
+  success: boolean;
+  user: TUser;
 };
 
 export const userApi = createApi({
@@ -67,6 +78,14 @@ export const userApi = createApi({
         clearTokens();
       },
     }),
+    updateUser: builder.mutation<TUser, TUpdateUserRequest>({
+      query: (body) => ({
+        url: apiUrls.updateUser,
+        method: 'PATCH',
+        body: JSON.stringify(body),
+      }),
+      transformResponse: (response: TUpdateUserResponse) => response.user,
+    }),
   }),
 });
 
@@ -75,4 +94,5 @@ export const {
   useLoginMutation,
   useGetUserQuery,
   useLogoutMutation,
+  useUpdateUserMutation,
 } = userApi;

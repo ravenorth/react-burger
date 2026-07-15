@@ -5,8 +5,8 @@ import { ingredientDetailsSlice } from './ingredientDetails/ingredientDetailsSli
 import { ingredientsApi } from './ingredients/ingredientsApi.ts';
 import { orderApi } from './order/orderApi.ts';
 import { passwordApi } from './password/passwordApi.ts';
-import { userSlice } from './user/slice.ts';
 import { userApi } from './user/userApi.ts';
+import { userSlice } from './user/userSlice.ts';
 
 const rootReducer = combineSlices(
   ingredientsApi,

@@ -40,6 +40,9 @@ export const userSlice = createSlice({
       })
       .addMatcher(userApi.endpoints.logout.matchFulfilled, (state) => {
         state.user = null;
+      })
+      .addMatcher(userApi.endpoints.updateUser.matchFulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
   selectors: {

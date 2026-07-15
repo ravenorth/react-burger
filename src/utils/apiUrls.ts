@@ -7,6 +7,7 @@ export const apiUrls = {
   logout: 'auth/logout',
   refreshToken: 'auth/token',
   getUser: 'auth/user',
+  updateUser: 'auth/user',
   forgotPassword: 'password-reset',
   resetPassword: 'password-reset/reset',
 };

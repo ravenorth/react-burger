@@ -2,8 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { getRefreshToken } from '@utils/token.ts';
 
-import { setIsAuthChecked } from './slice.ts';
 import { userApi } from './userApi.ts';
+import { setIsAuthChecked } from './userSlice.ts';
 
 export const checkUserAuth = createAsyncThunk(
   'user/checkUserAuth',
