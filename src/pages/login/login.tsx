@@ -18,7 +18,7 @@ export const Login = (): React.JSX.Element => {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      login({ email, password }).catch(console.error);
+      login({ email, password }).unwrap().catch(console.error);
     },
     [email, password, login]
   );

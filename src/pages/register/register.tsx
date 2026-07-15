@@ -20,7 +20,7 @@ export const Register = (): React.JSX.Element => {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      register({ email, password, name }).catch(console.error);
+      register({ email, password, name }).unwrap().catch(console.error);
     },
     [email, password, name, register]
   );

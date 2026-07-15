@@ -4,6 +4,7 @@ import { burgerConstructorSlice } from './burgerConstructor/burgerConstructorSli
 import { ingredientDetailsSlice } from './ingredientDetails/ingredientDetailsSlice.ts';
 import { ingredientsApi } from './ingredients/ingredientsApi.ts';
 import { orderApi } from './order/orderApi.ts';
+import { passwordApi } from './password/passwordApi.ts';
 import { userSlice } from './user/slice.ts';
 import { userApi } from './user/userApi.ts';
 
@@ -12,6 +13,7 @@ const rootReducer = combineSlices(
   burgerConstructorSlice,
   ingredientDetailsSlice,
   orderApi,
+  passwordApi,
   userApi,
   userSlice
 );
@@ -22,6 +24,7 @@ const store = configureStore({
     getDefaultMiddleware().concat(
       ingredientsApi.middleware,
       orderApi.middleware,
+      passwordApi.middleware,
       userApi.middleware
     ),
   devTools: import.meta.env.DEV,
