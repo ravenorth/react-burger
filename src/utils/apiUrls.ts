@@ -2,6 +2,7 @@ export const apiUrls = {
   baseUrl: 'https://new-stellarburgers.education-services.ru/api/',
   getIngredients: 'ingredients',
   createOrder: 'orders',
+  getOrder: 'orders',
   register: 'auth/register',
   login: 'auth/login',
   logout: 'auth/logout',
@@ -10,4 +11,6 @@ export const apiUrls = {
   updateUser: 'auth/user',
   forgotPassword: 'password-reset',
   resetPassword: 'password-reset/reset',
+  wsAllOrders: 'wss://new-stellarburgers.education-services.ru/orders/all',
+  wsUserOrders: 'wss://new-stellarburgers.education-services.ru/orders',
 };

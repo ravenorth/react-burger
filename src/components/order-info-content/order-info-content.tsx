@@ -4,16 +4,15 @@ import {
   Preloader,
 } from '@krgaa/react-developer-burger-ui-components';
 import { clsx } from 'clsx';
+import { useMemo } from 'react';
 
 import { GradientBorder } from '@components/gradient-border/gradient-border';
-import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi';
+import { useAppSelector } from '@services/hooks';
 import {
   getIngredientMap,
-  getOrderComposition,
-  getOrderStatusText,
-  getOrderTotal,
-  isOrderDone,
-} from '@utils/orders';
+  useGetIngredientsQuery,
+} from '@services/ingredients/ingredientsApi';
+import { getOrderStatusText, getOrderTotal, isOrderDone } from '@utils/orders';
 
 import type { TIngredient, TOrder } from '@utils/types';
 
@@ -26,12 +25,29 @@ type TOrderInfoContentProps = {
 export const OrderInfoContent = ({
   order,
 }: TOrderInfoContentProps): React.JSX.Element => {
-  const { data: ingredients = [], isLoading } = useGetIngredientsQuery();
-  const ingredientMap = getIngredientMap(ingredients);
-  const composition = getOrderComposition(order, ingredientMap);
+  const { isLoading } = useGetIngredientsQuery();
+  const ingredientMap = useAppSelector(getIngredientMap);
+
+  const composition = useMemo(() => {
+    if (isLoading) {
+      return null;
+    }
+
+    const counts = new Map<string, number>();
+
+    order.ingredients.forEach((id) => {
+      counts.set(id, (counts.get(id) ?? 0) + 1);
+    });
+
+    return [...counts.entries()].map(([id, count]) => ({
+      ingredient: ingredientMap[id],
+      count,
+    }));
+  }, [order, ingredientMap]);
+
   const total = getOrderTotal(order, ingredientMap);
 
-  if (isLoading) {
+  if (isLoading || !composition) {
     return <Preloader />;
   }
 

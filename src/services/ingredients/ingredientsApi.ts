@@ -1,7 +1,9 @@
+import { createSelector } from '@reduxjs/toolkit';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { apiUrls } from '@utils/apiUrls.ts';
 
+import type { RootState } from '@services/store';
 import type { TIngredient } from '@utils/types.ts';
 
 type TIngredientsResponse = {
@@ -28,3 +30,12 @@ export const ingredientsApi = createApi({
 });
 
 export const { useGetIngredientsQuery } = ingredientsApi;
+
+export const getIngredientMap = createSelector(
+  (state: RootState) => ingredientsApi.endpoints.getIngredients.select()(state).data,
+  (ingredients) =>
+    (ingredients ?? []).reduce<Record<string, TIngredient>>((map, ingredient) => {
+      map[ingredient._id] = ingredient;
+      return map;
+    }, {})
+);

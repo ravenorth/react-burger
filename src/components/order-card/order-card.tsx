@@ -7,13 +7,9 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { GradientBorder } from '@components/gradient-border/gradient-border';
-import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi';
-import {
-  getIngredientMap,
-  getOrderStatusText,
-  getOrderTotal,
-  isOrderDone,
-} from '@utils/orders';
+import { useAppSelector } from '@services/hooks';
+import { getIngredientMap } from '@services/ingredients/ingredientsApi';
+import { getOrderStatusText, getOrderTotal, isOrderDone } from '@utils/orders';
 
 import type { TIngredient, TOrder } from '@utils/types';
 
@@ -32,9 +28,8 @@ export const OrderCard = ({
   path,
   showStatus = false,
 }: TOrderCardProps): React.JSX.Element => {
-  const { data: ingredients = [] } = useGetIngredientsQuery();
+  const ingredientMap = useAppSelector(getIngredientMap);
 
-  const ingredientMap = getIngredientMap(ingredients);
   const { previewIngredients, extraCount } = useMemo(() => {
     const ingredientSet = new Set(order.ingredients);
     const _previewIngredients = [...ingredientSet]

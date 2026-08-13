@@ -1,33 +1,6 @@
 import type { TIngredient, TOrder, TOrderStatus } from './types.ts';
 
-type TOrderCompositionItem = {
-  ingredient: TIngredient;
-  count: number;
-};
-
-export const getIngredientMap = (
-  ingredients: TIngredient[]
-): Record<string, TIngredient> =>
-  ingredients.reduce<Record<string, TIngredient>>((acc, ingredient) => {
-    acc[ingredient._id] = ingredient;
-    return acc;
-  }, {});
-
-export const getOrderComposition = (
-  order: TOrder,
-  ingredientMap: Record<string, TIngredient>
-): TOrderCompositionItem[] => {
-  const counts = new Map<string, number>();
-
-  order.ingredients.forEach((id) => {
-    counts.set(id, (counts.get(id) ?? 0) + 1);
-  });
-
-  return [...counts.entries()].map(([id, count]) => ({
-    ingredient: ingredientMap[id],
-    count,
-  }));
-};
+const VALID_ORDER_STATUSES: TOrderStatus[] = ['created', 'pending', 'done'];
 
 export const getOrderTotal = (
   order: TOrder,
@@ -49,3 +22,20 @@ export const getOrderStatusText = (status: TOrderStatus): string => {
 };
 
 export const isOrderDone = (status: TOrderStatus): boolean => status === 'done';
+
+export const isValidOrder = (order: TOrder | null | undefined): boolean => {
+  if (!order || typeof order !== 'object') {
+    return false;
+  }
+  return (
+    '_id' in order &&
+    'number' in order &&
+    'name' in order &&
+    'status' in order &&
+    'ingredients' in order &&
+    'createdAt' in order &&
+    'updatedAt' in order &&
+    VALID_ORDER_STATUSES.includes(order.status) &&
+    Array.isArray(order.ingredients)
+  );
+};

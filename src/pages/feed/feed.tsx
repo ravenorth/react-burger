@@ -1,15 +1,35 @@
 import { Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { FeedInfo } from '@components/feed-info/feed-info';
 import { OrdersList } from '@components/orders-list/orders-list';
+import {
+  getFeedIsConnected,
+  getFeedOrders,
+  getFeedTotal,
+  getFeedTotalToday,
+} from '@services/feed/feedSlice';
+import { wsConnectAll, wsDisconnectAll } from '@services/feed/feedSocketMiddleware';
+import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { useGetIngredientsQuery } from '@services/ingredients/ingredientsApi';
-import { MOCK_FEED_STATS, MOCK_ORDERS } from '@utils/mockOrders';
 
 import styles from './feed.module.css';
 
 export const Feed = (): React.JSX.Element => {
-  const { isLoading } = useGetIngredientsQuery();
+  const dispatch = useAppDispatch();
+  const { isLoading: isIngredientsLoading } = useGetIngredientsQuery();
+  const orders = useAppSelector(getFeedOrders);
+  const total = useAppSelector(getFeedTotal);
+  const totalToday = useAppSelector(getFeedTotalToday);
+  const isConnected = useAppSelector(getFeedIsConnected);
+
+  useEffect(() => {
+    dispatch(wsConnectAll());
+    return (): void => {
+      dispatch(wsDisconnectAll());
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -17,16 +37,12 @@ export const Feed = (): React.JSX.Element => {
         <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5`}>
           Лента заказов
         </h1>
-        {!isLoading ? (
+        {isConnected && !isIngredientsLoading ? (
           <div className={styles.content}>
             <div className={styles.orders}>
-              <OrdersList orders={MOCK_ORDERS} path="/feed" />
+              <OrdersList orders={orders} path="/feed" />
             </div>
-            <FeedInfo
-              orders={MOCK_ORDERS}
-              total={MOCK_FEED_STATS.total}
-              today={MOCK_FEED_STATS.today}
-            />
+            <FeedInfo orders={orders} total={total} today={totalToday} />
           </div>
         ) : (
           <Preloader />
