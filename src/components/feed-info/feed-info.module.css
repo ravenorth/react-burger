@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--offset-base-size) * 15);
+  width: 580px;
+}
+
+.statuses {
+  display: flex;
+  gap: calc(var(--offset-base-size) * 9);
+}
+
+.statusBlock {
+  flex: 1;
+}
+
+.numbers {
+  display: flex;
+  flex-flow: column wrap;
+  gap: calc(var(--offset-base-size) * 2);
+  max-height: 180px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.done {
+  color: var(--colors-interface-success);
+}

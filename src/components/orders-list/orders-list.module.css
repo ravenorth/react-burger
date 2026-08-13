@@ -1,0 +1,8 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--offset-base-size) * 4);
+  box-sizing: border-box;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+}

@@ -1,5 +1,17 @@
 type TIngredientType = 'bun' | 'main' | 'sauce';
 
+type TOrderStatus = 'created' | 'pending' | 'done';
+
+type TOrder = {
+  _id: string;
+  number: number;
+  name: string;
+  status: TOrderStatus;
+  ingredients: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 type TIngredient = {
   _id: string;
   name: string;
@@ -27,4 +39,12 @@ type TUser = {
   name: string;
 };
 
-export type { TIngredientType, TIngredient, TConstructorIngredient, TDragItem, TUser };
+export type {
+  TIngredientType,
+  TIngredient,
+  TConstructorIngredient,
+  TDragItem,
+  TUser,
+  TOrderStatus,
+  TOrder,
+};

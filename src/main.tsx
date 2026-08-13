@@ -4,7 +4,9 @@ import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { App } from '@components/app/app';
+import { FeedOrderModal } from '@components/feed-order-modal/feed-order-modal';
 import { IngredientModal } from '@components/ingredient-modal/ingredient-modal';
+import { ProfileOrderModal } from '@components/profile-order-modal/profile-order-modal';
 import { ProtectedRoute } from '@components/protected-route/protected-route';
 import { Feed } from '@pages/feed/feed.tsx';
 import { ForgotPassword } from '@pages/forgot-password/forgot-password.tsx';
@@ -73,6 +75,12 @@ const router = createBrowserRouter([
       {
         path: 'feed',
         element: <Feed />,
+        children: [
+          {
+            path: ':id',
+            element: <FeedOrderModal />,
+          },
+        ],
       },
       {
         path: 'profile',
@@ -89,6 +97,12 @@ const router = createBrowserRouter([
           {
             path: 'orders',
             element: <ProfileOrders />,
+            children: [
+              {
+                path: ':id',
+                element: <ProfileOrderModal />,
+              },
+            ],
           },
         ],
       },
