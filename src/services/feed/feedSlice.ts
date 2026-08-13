@@ -1,4 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+
+import { isOrderDone } from '@utils/orders';
 
 import type { TOrder } from '@utils/types.ts';
 
@@ -46,6 +48,16 @@ export const feedSlice = createSlice({
     getFeedTotalToday: (state) => state.totalToday,
     getFeedIsConnected: (state) => state.isConnected,
     getFeedError: (state) => state.error,
+    getFeedDoneNumbers: createSelector(
+      (state: TFeedState) => state.orders,
+      (orders) =>
+        orders.filter((order) => isOrderDone(order.status)).map((order) => order.number)
+    ),
+    getFeedPendingNumbers: createSelector(
+      (state: TFeedState) => state.orders,
+      (orders) =>
+        orders.filter((order) => !isOrderDone(order.status)).map((order) => order.number)
+    ),
   },
 });
 
@@ -56,4 +68,6 @@ export const {
   getFeedTotalToday,
   getFeedIsConnected,
   getFeedError,
+  getFeedDoneNumbers,
+  getFeedPendingNumbers,
 } = feedSlice.selectors;

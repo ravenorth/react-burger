@@ -42,7 +42,7 @@ export const Feed = (): React.JSX.Element => {
             <div className={styles.orders}>
               <OrdersList orders={orders} path="/feed" />
             </div>
-            <FeedInfo orders={orders} total={total} today={totalToday} />
+            <FeedInfo total={total} today={totalToday} />
           </div>
         ) : (
           <Preloader />

@@ -1,29 +1,20 @@
 import { clsx } from 'clsx';
 
-import { isOrderDone } from '@utils/orders';
-
-import type { TOrder } from '@utils/types';
+import { getFeedDoneNumbers, getFeedPendingNumbers } from '@services/feed/feedSlice';
+import { useAppSelector } from '@services/hooks';
 
 import styles from './feed-info.module.css';
 
+const MAX_STATUS_NUMBERS_COUNT = 20;
+
 type TFeedInfoProps = {
-  orders: TOrder[];
   total: number;
   today: number;
 };
 
-export const FeedInfo = ({
-  orders,
-  total,
-  today,
-}: TFeedInfoProps): React.JSX.Element => {
-  const doneNumbers = orders
-    .filter((order) => isOrderDone(order.status))
-    .map((order) => order.number);
-
-  const pendingNumbers = orders
-    .filter((order) => !isOrderDone(order.status))
-    .map((order) => order.number);
+export const FeedInfo = ({ total, today }: TFeedInfoProps): React.JSX.Element => {
+  const doneNumbers = useAppSelector(getFeedDoneNumbers);
+  const pendingNumbers = useAppSelector(getFeedPendingNumbers);
 
   return (
     <section className={styles.container}>
@@ -48,7 +39,7 @@ const StatusBlock = ({ title, numbers, done }: TStatusBlockProps): React.JSX.Ele
     <div className={styles.statusBlock}>
       <p className="text text_type_main-medium mb-6">{title}</p>
       <ul className={styles.numbers}>
-        {numbers.map((number) => (
+        {numbers.slice(0, MAX_STATUS_NUMBERS_COUNT).map((number) => (
           <li key={number}>
             <span className={clsx('text text_type_digits-default', done && styles.done)}>
               {number}

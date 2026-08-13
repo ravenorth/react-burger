@@ -15,7 +15,7 @@ import type { TIngredient, TOrder } from '@utils/types';
 
 import styles from './order-card.module.css';
 
-const MAX_PREVIEW_INGREDIENTS = 3;
+const MAX_PREVIEW_INGREDIENTS_COUNT = 6;
 
 type TOrderCardProps = {
   order: TOrder;
@@ -34,7 +34,7 @@ export const OrderCard = ({
     const ingredientSet = new Set(order.ingredients);
     const _previewIngredients = [...ingredientSet]
       .map((id) => ingredientMap[id])
-      .slice(0, MAX_PREVIEW_INGREDIENTS);
+      .slice(0, MAX_PREVIEW_INGREDIENTS_COUNT);
     const _extraCount = ingredientSet.size - _previewIngredients.length;
 
     return { previewIngredients: _previewIngredients, extraCount: _extraCount };
@@ -83,25 +83,33 @@ const IngredientPreview = ({
 }: TIngredientPreviewProps): React.JSX.Element => {
   return (
     <ul className={styles.preview}>
-      {ingredients.map((ingredient, index) => (
-        <li
-          key={ingredient._id}
-          className={styles.previewItem}
-          style={{ zIndex: -index }}
-        >
-          <GradientBorder>
-            {index === ingredients.length - 1 && extraCount > 0 ? (
-              <span className="text text_type_main-default">+{extraCount}</span>
-            ) : (
-              <img
-                className={styles.previewImage}
-                src={ingredient.image_mobile}
-                alt={ingredient.name}
-              />
-            )}
-          </GradientBorder>
-        </li>
-      ))}
+      {ingredients.map((ingredient, index) => {
+        const showCounter = index === ingredients.length - 1 && extraCount > 0;
+        return (
+          <li
+            key={ingredient._id}
+            className={styles.previewItem}
+            style={{ zIndex: -index }}
+          >
+            <GradientBorder>
+              <div
+                className={clsx(styles.previewContent, showCounter && styles.overlay)}
+              >
+                <img
+                  className={styles.previewImage}
+                  src={ingredient.image_mobile}
+                  alt={ingredient.name}
+                />
+                {showCounter && (
+                  <span className={`${styles.extraCount} text text_type_main-default`}>
+                    +{extraCount}
+                  </span>
+                )}
+              </div>
+            </GradientBorder>
+          </li>
+        );
+      })}
     </ul>
   );
 };

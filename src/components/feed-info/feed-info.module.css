@@ -15,10 +15,11 @@
 }
 
 .numbers {
-  display: flex;
-  flex-flow: column wrap;
-  gap: calc(var(--offset-base-size) * 2);
-  max-height: 180px;
+  display: grid;
+  grid-template-rows: repeat(10, auto);
+  grid-template-columns: repeat(2, min-content);
+  grid-auto-flow: column;
+  gap: calc(var(--offset-base-size) * 2) calc(var(--offset-base-size) * 4);
   margin: 0;
   padding: 0;
   overflow: hidden;
