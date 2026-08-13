@@ -37,9 +37,7 @@ export const createSocketMiddleware = <TMessage>(
         storeApi.dispatch(config.onError('Ошибка соединения'));
       };
       ws.onclose = (): void => {
-        if (ws === ws) {
-          ws = null;
-        }
+        ws = null;
         storeApi.dispatch(config.onClose());
       };
       ws.onmessage = async (event): Promise<void> => {
