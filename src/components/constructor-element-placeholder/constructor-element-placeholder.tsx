@@ -6,12 +6,14 @@ type TConstructorElementPlaceholderProps = {
   text: string;
   type?: 'top' | 'bottom';
   isTarget?: boolean;
+  testId?: string;
 };
 
 export const ConstructorElementPlaceholder = ({
   text,
   type,
   isTarget = false,
+  testId,
 }: TConstructorElementPlaceholderProps): React.JSX.Element => {
   return (
     <div
@@ -21,6 +23,7 @@ export const ConstructorElementPlaceholder = ({
         !!type && styles[type],
         isTarget && styles.target
       )}
+      data-testid={testId}
     >
       {text}
     </div>

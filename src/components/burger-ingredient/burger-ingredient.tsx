@@ -29,6 +29,7 @@ export const Ingredient = ({
       }}
       to={`/ingredients/${ingredient._id}`}
       className={styles.burgerIngredient}
+      data-testid={`ingredient-${ingredient._id}`}
     >
       <img
         className={`${styles.image} ml-4 mr-4`}
