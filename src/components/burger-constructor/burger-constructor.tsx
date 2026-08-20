@@ -94,10 +94,14 @@ export const BurgerConstructor = (): React.JSX.Element => {
           dropTargetRef(node);
         }}
         className={`${styles.burgerConstructor} mb-10`}
+        data-testid="burger-constructor"
       >
         <IngredientList bunTarget={bunTarget} ingredientTarget={ingredientTarget} />
         <footer className={`${styles.info} pl-4 pr-4 pt-10`}>
-          <span className={`${styles.price} text text_type_digits-medium mr-10`}>
+          <span
+            className={`${styles.price} text text_type_digits-medium mr-10`}
+            data-testid="constructor-total"
+          >
             {total} <CurrencyIcon className={styles.icon} type="primary" />
           </span>
           <Button
@@ -105,13 +109,14 @@ export const BurgerConstructor = (): React.JSX.Element => {
             size="large"
             onClick={handleCreateOrder}
             disabled={isLoading || !bun}
+            data-testid="order-button"
           >
             {isLoading ? 'Оформляем...' : 'Оформить заказ'}
           </Button>
         </footer>
       </section>
       {orderDetailsOpened && data?.order && (
-        <Modal onClose={handleCloseModal}>
+        <Modal onClose={handleCloseModal} testId="order-details-modal">
           <OrderDetails id={data.order.number} />
         </Modal>
       )}
@@ -149,6 +154,7 @@ const IngredientList = ({
           <ConstructorElementPlaceholder
             text="Выберите начинку"
             isTarget={ingredientTarget}
+            testId="constructor-filling-placeholder"
           />
         )}
       </div>
@@ -167,7 +173,10 @@ const Bun = ({ bun, type, isTarget }: TBunProps): React.JSX.Element => {
   const hint = type === 'top' ? 'верх' : 'низ';
 
   return (
-    <div className={`${styles.bun} custom-scroll pl-4 pr-2`}>
+    <div
+      className={`${styles.bun} custom-scroll pl-4 pr-2`}
+      data-testid={`constructor-bun-${type}`}
+    >
       {bun ? (
         <ConstructorElement
           text={`${bun.name} (${hint})`}
@@ -181,6 +190,7 @@ const Bun = ({ bun, type, isTarget }: TBunProps): React.JSX.Element => {
           text="Выберите булки"
           type={type}
           isTarget={isTarget}
+          testId="constructor-bun-placeholder"
         />
       )}
     </div>
@@ -225,6 +235,7 @@ const Ingredient = ({
         dragRef(dropRef(node));
       }}
       className={clsx(styles.ingredient, isDragging && styles.dragging)}
+      data-testid={`constructor-ingredient-${ingredient._id}`}
     >
       <DragIcon type="primary" />
       <ConstructorElement

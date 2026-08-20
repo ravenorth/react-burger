@@ -12,9 +12,15 @@ type TModalProps = {
   title?: string;
   onClose: () => void;
   children: ReactNode;
+  testId?: string;
 };
 
-export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Element => {
+export const Modal = ({
+  title,
+  children,
+  onClose,
+  testId = 'modal',
+}: TModalProps): React.JSX.Element => {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') {
@@ -32,8 +38,13 @@ export const Modal = ({ title, children, onClose }: TModalProps): React.JSX.Elem
   return createPortal(
     <>
       <ModalOverlay onClick={onClose} />
-      <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose} type="button">
+      <div className={styles.modal} data-testid={testId}>
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          type="button"
+          data-testid="modal-close"
+        >
           <CloseIcon type="primary" />
         </button>
         {title && (

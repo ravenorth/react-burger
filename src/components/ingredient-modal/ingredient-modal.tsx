@@ -15,6 +15,7 @@ export const IngredientModal = (): React.JSX.Element => {
       onClose={() => {
         void navigate('/');
       }}
+      testId="ingredient-modal"
     >
       <Content />
     </Modal>

@@ -36,3 +36,6 @@
 		'@utils': path.resolve(__dirname, './src/utils'),
 	},
 ```
+
+Ссылка на задеплоенное приложение
+https://stellarburgers-project.ru/
